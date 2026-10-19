@@ -1,0 +1,21 @@
+menu "Heap leak demo"
+
+    config DEMO_HEAP_LOG
+        bool "Log the heap from the firmware"
+        default n
+        help
+            Adds a task that logs the free heap and prints "HEAP LOW" once the heap has lost
+            DEMO_HEAP_BUDGET_KB since boot, to watch the leak on a real board. In Wokwi, the
+            CLI follows the heap without it.
+
+    config DEMO_HEAP_BUDGET_KB
+        int "Heap budget in KB"
+        depends on DEMO_HEAP_LOG
+        default 32
+
+    config DEMO_HEAP_REPORT_MS
+        int "Heap report interval in ms"
+        depends on DEMO_HEAP_LOG
+        default 500
+
+endmenu

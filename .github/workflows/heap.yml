@@ -1,0 +1,32 @@
+name: Heap leak test
+
+on: [push, pull_request]
+
+jobs:
+  leak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build firmware
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v6.0
+          target: esp32s3
+
+      - name: Leak test (200 requests)
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          scenario: scenarios/leak.test.yaml
+          timeout: 60000
+          heap_interval: 500
+          heap_min_free: 350000
+          heap_csv: heap.csv
+
+      - name: Upload heap samples
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heap
+          path: heap.csv
