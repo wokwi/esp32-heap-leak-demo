@@ -1,4 +1,5 @@
 build/
 sdkconfig
 sdkconfig.old
-heap.csv
+/heap.csv
+/heap.png

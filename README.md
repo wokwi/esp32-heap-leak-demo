@@ -39,7 +39,16 @@ Heap: 16 samples, free 388008 -> 348944, lowest 347916, 5209 bytes/s lost
 TEST FAILED.
 ```
 
-Every sample also lands in `heap.csv` (`part,time_s,free,min_free`), in case you want to chart it.
+Every sample also lands in `heap.csv` (`part,time_s,free,min_free`). Want a picture? This draws it into `heap.png`:
+
+```sh
+pip install matplotlib
+python3 scripts/plot-heap.py heap.csv --limit 350000
+```
+
+(Or skip the install with [uv](https://docs.astral.sh/uv/): `uv run scripts/plot-heap.py heap.csv --limit 350000`.)
+
+![Free heap falling steadily until it crosses the 350,000-byte limit at 8 seconds](images/heap.png)
 
 Want a longer run? Generate a scenario with more presses (any multiple of 50):
 
@@ -59,4 +68,6 @@ Want to see the leak on an actual ESP32-S3 DevKitC-1? Turn on *Heap leak demo ->
 
 ## GitHub Actions
 
-`.github/workflows/heap.yml` builds the firmware, runs the test on every push, and uploads `heap.csv` as an artifact.
+`.github/workflows/heap.yml` builds the firmware, runs the test on every push, and uploads `heap.csv` and the plot as an artifact.
+
+Pushes to the default branch also show the plot right in the job summary. Job summaries only display hosted images, so the workflow publishes the plot on GitHub Pages. To turn that on in your copy of the repo, set *Settings -> Pages -> Source* to *GitHub Actions*.
